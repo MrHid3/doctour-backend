@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Endpoints {
 
-    @Autowired
-    UserService userService;
-
     @GetMapping("/")
     public String hello() {
         return "jo";
@@ -22,9 +19,9 @@ public class Endpoints {
         return "this shit secure";
     }
 
-    @PostMapping("/create")
-    public String create(@RequestParam("username") String username, @RequestParam("password") String password){
-        return userService.create(username, password);
-    }
+//    @PostMapping("/create")
+//    public String create(@RequestParam("username") String username, @RequestParam("password") String password){
+//        return userService.create(username, password);
+//    }
 
 }
