@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,15 @@ public class AppUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<AppUser> optionalAppUser = appUserService.findByUsername(username);
+        if (optionalAppUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        AppUser appUser = optionalAppUser.get();
+        return new User(appUser.getUsername(), appUser.getPassword(), getAuthoritiesList("USER"));
+    }
+
+    public UserDetails loadUserByUuid(UUID uuid) throws UsernameNotFoundException{
+        Optional<AppUser> optionalAppUser = appUserService.findByUuid(uuid);
         if (optionalAppUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
