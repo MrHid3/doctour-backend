@@ -2,7 +2,9 @@ package com.doctour.doctourbe;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -13,6 +15,8 @@ import java.util.UUID;
 @ToString
 @Table(name = "\"user\"")
 public class AppUser {
+
+    public AppUser(){};
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

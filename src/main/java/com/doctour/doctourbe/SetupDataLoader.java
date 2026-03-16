@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import javax.management.relation.RoleNotFoundException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -31,25 +31,28 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        if (alreadySetup)
+        if (alreadySetup){
             return;
+        }
+
 //        Privilege readAllPrivilege = createPrivilageIfNotFound("READ_ALL_MEMBERS_PRIVILAGE");
 //        Privilege readOwnMembers = createPrivilageIfNotFound("READ_OWN_MEMBERS_PRIVILAGE");
 //        Privilege addMembers = createPrivilageIfNotFound("CREATE_MEMBERS");
-            Privilege setSchedule = createPrivilageIfNotFound("SET_SCHEDULE");
-            Privilege makeAppointment = createPrivilageIfNotFound("MAKE_APPOINTMENT");
-
+        Privilege setSchedule = createPrivilegeIfNotFound("SET_SCHEDULE");
+        Privilege makeAppointment = createPrivilegeIfNotFound("MAKE_APPOINTMENT");
+        createRoleIfNotFound("ROLE_DOCTOR", Arrays.asList(setSchedule));
+        createRoleIfNotFound("ROLE_CUSTOMER", Arrays.asList(makeAppointment));
     }
 
     @Transactional
-    Privilege createPrivilageIfNotFound(String name) {
+    Privilege createPrivilegeIfNotFound(String name) {
 
-        Privilege privilage = privilegeRepository.findByName(name);
-        if (privilage == null) {
-            privilage = new Privilege(name);
-            privilegeRepository.save(privilage);
+        Privilege privilege = privilegeRepository.findByName(name);
+        if (privilege == null) {
+            privilege = new Privilege(name);
+            privilegeRepository.save(privilege);
         }
-        return privilage;
+        return privilege;
     }
 
     @Transactional

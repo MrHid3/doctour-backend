@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -22,18 +24,22 @@ public class AuthController {
     private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public AuthController(AppUserService appUserService, CustomAuthenticationProvider customAuthenticationProvider, JwtService jwtService, RefreshTokenService refreshTokenService){
+    public AuthController(AppUserService appUserService, CustomAuthenticationProvider customAuthenticationProvider, JwtService jwtService, RefreshTokenService refreshTokenService, RoleRepository roleRepository){
         this.appUserService = appUserService;
         this.customAuthenticationProvider = customAuthenticationProvider;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.roleRepository = roleRepository;
     }
 
     @PostMapping("/register")
     public ResponseEntity<String> registration(@RequestBody AppUser appUser){
+        //change this into a register request and add a constructor for that into AppUserService
         try{
+            roleRepository.flush();
             appUserService.saveAppUser(appUser);
             return ResponseEntity.ok("User registered succesfully");
         }catch (Exception e){
