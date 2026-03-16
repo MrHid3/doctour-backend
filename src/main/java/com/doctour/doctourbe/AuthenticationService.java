@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +28,8 @@ public class AuthenticationService {
         return Optional.of(new User(appUser.getUsername(), appUser.getPassword(), getAuthorities("USER")));
     }
 
-    private List<GrantedAuthority> getAuthorities(String role) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
+    private Collection<GrantedAuthority> getAuthorities(String role) {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
     }

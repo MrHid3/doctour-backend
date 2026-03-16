@@ -3,6 +3,7 @@ package com.doctour.doctourbe;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.UUID;
 
 
@@ -21,4 +22,12 @@ public class AppUser {
     private String username;
     private String password;
 
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_uuid", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 }

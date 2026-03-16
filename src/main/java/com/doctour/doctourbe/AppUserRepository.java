@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
 
-    Optional<AppUser> findByUsername(String username);
+    Optional<AppUser> findByUsername(String username) throws UsernameNotFoundException;
 
     Optional<AppUser> findByUuid(UUID uuid) throws UsernameNotFoundException;
 }
