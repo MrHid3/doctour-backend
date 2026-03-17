@@ -1,5 +1,6 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.repository;
 
+import com.doctour.doctourbe.model.Privilege;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

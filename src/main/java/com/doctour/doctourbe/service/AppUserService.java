@@ -1,5 +1,9 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.service;
 
+import com.doctour.doctourbe.exception.InvalidPasswordException;
+import com.doctour.doctourbe.exception.UsernameTakenException;
+import com.doctour.doctourbe.repository.AppUserRepository;
+import com.doctour.doctourbe.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +30,11 @@ public class AppUserService {
         return this.appUserRepository.findByUuid(uuid);
     }
 
-    public AppUser saveAppUser(AppUser appUser){
-        appUser.setPassword(this.encodingService.encodePassword(appUser.getPassword()));
+    public AppUser saveAppUser(AppUser appUser) throws UsernameTakenException{
+        if(appUserRepository.findByUsername(appUser.getUsername()).isPresent()){
+            throw new UsernameTakenException("Username taken");
+        }
+        appUser.setPasswordHash(this.encodingService.encodePassword(appUser.getPassword()));
         return this.appUserRepository.save(appUser);
     }
 }

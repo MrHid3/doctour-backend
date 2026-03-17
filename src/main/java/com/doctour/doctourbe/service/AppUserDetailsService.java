@@ -1,5 +1,8 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.service;
 
+import com.doctour.doctourbe.model.Privilege;
+import com.doctour.doctourbe.model.Role;
+import com.doctour.doctourbe.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

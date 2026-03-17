@@ -1,11 +1,12 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.service;
 
+import com.doctour.doctourbe.model.RefreshToken;
+import com.doctour.doctourbe.repository.RefreshTokenRepository;
+import com.doctour.doctourbe.model.AppUser;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

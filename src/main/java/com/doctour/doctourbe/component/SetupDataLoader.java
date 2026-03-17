@@ -1,5 +1,11 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.component;
 
+import com.doctour.doctourbe.model.Privilege;
+import com.doctour.doctourbe.model.Role;
+import com.doctour.doctourbe.repository.AppUserRepository;
+import com.doctour.doctourbe.repository.PrivilegeRepository;
+import com.doctour.doctourbe.repository.RoleRepository;
+import com.doctour.doctourbe.service.EncodingService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;

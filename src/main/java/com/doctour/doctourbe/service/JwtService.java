@@ -1,5 +1,6 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.service;
 
+import com.doctour.doctourbe.model.AppUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

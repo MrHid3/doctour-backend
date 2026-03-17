@@ -1,5 +1,6 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.repository;
 
+import com.doctour.doctourbe.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

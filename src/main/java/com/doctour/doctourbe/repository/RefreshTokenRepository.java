@@ -1,9 +1,10 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.repository;
 
+import com.doctour.doctourbe.model.AppUser;
+import com.doctour.doctourbe.model.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Ref;
 import java.util.Optional;
 import java.util.UUID;
 

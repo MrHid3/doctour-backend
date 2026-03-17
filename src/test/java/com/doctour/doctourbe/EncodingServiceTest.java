@@ -1,5 +1,6 @@
 package com.doctour.doctourbe;
 
+import com.doctour.doctourbe.service.EncodingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

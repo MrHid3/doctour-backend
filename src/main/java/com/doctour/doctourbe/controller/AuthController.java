@@ -1,19 +1,26 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.controller;
 
+import com.doctour.doctourbe.exception.InvalidPasswordException;
+import com.doctour.doctourbe.exception.UsernameTakenException;
+import com.doctour.doctourbe.model.*;
+import com.doctour.doctourbe.repository.RoleRepository;
+import com.doctour.doctourbe.service.AppUserService;
+import com.doctour.doctourbe.service.CustomAuthenticationProvider;
+import com.doctour.doctourbe.service.JwtService;
+import com.doctour.doctourbe.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.Arrays;
 
 @RestController
@@ -36,14 +43,20 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registration(@RequestBody AppUser appUser){
-        //change this into a register request and add a constructor for that into AppUserService
+    public ResponseEntity<String> registration(@RequestBody RegisterRequest registerRequest){
         try{
-            roleRepository.flush();
+            AppUser appUser = new AppUser(registerRequest.getUsername(), registerRequest.getPassword());
+            Role role = roleRepository.findByName(registerRequest.getRole())
+                            .orElseThrow(() -> new RoleNotFoundException("Invalid role"));
+            appUser.setRoles(Arrays.asList(role));
             appUserService.saveAppUser(appUser);
             return ResponseEntity.ok("User registered succesfully");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.toString());
+        }catch (RoleNotFoundException e){
+            return ResponseEntity.badRequest().body("Invalid role");
+        }catch (UsernameTakenException e){
+            return ResponseEntity.badRequest().body("Username taken");
+        }catch (InvalidPasswordException e){
+            return ResponseEntity.badRequest().body("Invalid password");
         }
     }
 

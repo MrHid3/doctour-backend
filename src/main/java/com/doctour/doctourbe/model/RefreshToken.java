@@ -1,4 +1,4 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

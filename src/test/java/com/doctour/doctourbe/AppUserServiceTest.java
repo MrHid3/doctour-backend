@@ -1,14 +1,18 @@
 package com.doctour.doctourbe;
 
-import org.checkerframework.checker.mustcall.qual.MustCall;
+import com.doctour.doctourbe.exception.InvalidPasswordException;
+import com.doctour.doctourbe.exception.UsernameTakenException;
+import com.doctour.doctourbe.model.AppUser;
+import com.doctour.doctourbe.repository.AppUserRepository;
+import com.doctour.doctourbe.service.AppUserService;
+import com.doctour.doctourbe.service.EncodingService;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.UUID;
@@ -27,12 +31,12 @@ public class AppUserServiceTest {
     private AppUserService appUserService;
 
     @Test
-    void saveAppUser(){
+    void saveAppUser() throws InvalidPasswordException {
         AppUser user = new AppUser();
         user.setUuid(UUID.randomUUID());
         user.setUsername("bbb");
-        user.setPassword("aaaaa");
-        appUserService.saveAppUser(user);
+        user.setPassword("a!Aaaaaaa1a");
+        Assertions.assertDoesNotThrow(() -> appUserService.saveAppUser(user));
         Assertions.assertNotNull(appUserService.findByUsername("bbb"));
     }
 }

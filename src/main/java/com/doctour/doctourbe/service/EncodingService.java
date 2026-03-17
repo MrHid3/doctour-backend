@@ -1,4 +1,4 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

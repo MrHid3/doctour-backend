@@ -1,4 +1,4 @@
-package com.doctour.doctourbe;
+package com.doctour.doctourbe.model;
 
 import lombok.Getter;
 import lombok.Setter;
