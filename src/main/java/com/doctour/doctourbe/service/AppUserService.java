@@ -1,13 +1,16 @@
 package com.doctour.doctourbe.service;
 
+import com.doctour.doctourbe.dto.AppUserDTO;
 import com.doctour.doctourbe.exception.EmailException;
-import com.doctour.doctourbe.exception.UuidException;
+import com.doctour.doctourbe.model.Gender;
+import com.doctour.doctourbe.model.Role;
 import com.doctour.doctourbe.repository.AppUserRepository;
 import com.doctour.doctourbe.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,12 +38,14 @@ public class AppUserService {
         return this.appUserRepository.findByUuid(uuid);
     }
 
-    public AppUser createPending(String email, String username, String password) {
+    public AppUser createPending(String email, String username, String password, Role role, Gender gender) {
         AppUser appUser = new AppUser();
         appUser.setEmail(email);
         appUser.setUsername(username);
         appUser.setPassword(password);
         appUser.setStatus(AppUser.AppUserStatus.PENDING);
+        appUser.setRoles(List.of(role));
+        appUser.setGender(gender);
         this.save(appUser);
         return appUser;
     }
@@ -60,5 +65,15 @@ public class AppUserService {
             throw new EmailException("TAKEN");
         }
         return this.appUserRepository.save(appUser);
+    }
+
+    private AppUserDTO toDTO(AppUser appUser){
+        return new AppUserDTO(
+                appUser.getUuid(),
+                appUser.getUsername(),
+                appUser.getEmail(),
+                appUser.getGender(),
+                appUser.getLocation()
+        );
     }
 }

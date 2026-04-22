@@ -4,9 +4,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: $DOC_DB_URL
-    username: $DOC_DB_USERNAME
-    password: $DOC_DB_PASSWORD
+    url: ${DOC_DB_URL}
+    username: ${DOC_DB_USERNAME}
+    password: ${DOC_DB_PASSWORD}
 
   jpa:
     show-sql: true
@@ -14,10 +14,10 @@ spring:
       ddl-auto: create
 
   mail:
-    host: $DOC_EMAIL_HOST
-    port: $DOC_EMAIL_PORT
-    username: $DOC_MAIL_USERNAME
-    password: $DOC_EMAIL_PASSWORD
+    host: ${DOC_EMAIL_HOST}
+    port: ${DOC_EMAIL_PORT}
+    username: ${DOC_EMAIL_USERNAME}
+    password: ${DOC_EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -26,10 +26,11 @@ spring:
             enable: true
 
 jwt:
-  secret: $DOC_JWT_SECRET
+  secret: ${DOC_JWT_SECRET}
   expiration: 900000
   refresh-expiration: 2592000000
 
-doctour:
-  app:
-    frontend-url: $DOC_FRONTEND_URL
+app:
+  frontend-url: ${DOC_FRONTEND_URL}
+  magic-link:
+    expiry-hours: 24

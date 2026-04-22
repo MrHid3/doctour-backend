@@ -46,16 +46,22 @@ public class AuthController {
     private EmailSevice emailService;
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private GenderService genderService;
+
+    @Autowired
     private EncodingService encodingService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registration(@RequestBody RegisterRequest registerRequest) throws UsernameException, PasswordException {
-        AppUser appUser = new AppUser(registerRequest.email, registerRequest.password);
-        Role role = roleRepository.findByName(registerRequest.role)
-                .orElseThrow(() -> new RoleException("INVALID_ROLE"));
-        appUser.setRoles(List.of(role));
-        appUserService.save(appUser);
-        return ResponseEntity.ok("User registered succesfully");
+    public ResponseEntity<String> registration(@RequestBody RegisterRequest req) throws UsernameException, PasswordException {
+        AppUser appUser = appUserService.createPending(req.email, req.username, req.password,
+                roleService.findByName(req.role).orElseThrow(() -> new RoleException("INVALID")),
+                genderService.findById(req.genderId).orElseThrow(() -> new GenderException("INVALID")));
+        VerificationToken vt = verificationTokenService.createToken(appUser, VerificationToken.TokenType.REGISTRATION);
+        emailService.sendActiviationLink(appUser, vt.getToken());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
@@ -66,10 +72,10 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         AppUser appUser = appUserService.findByEmail(loginRequest.email())
-                .orElseThrow(() -> new UsernameNotFoundException("USER_NOT_FOUND"));
+                .orElseThrow(() -> new UsernameNotFoundException("NOT_FOUND"));
 
         if (appUser.getStatus() != AppUser.AppUserStatus.ACTIVE) {
-            throw new AppUserException("USER_NOT_ACTIVE");
+            throw new AppUserException("NOT_ACTIVE");
         }
 
         String accessToken = jwtService.generateAccessToken(appUser);
@@ -80,14 +86,6 @@ public class AuthController {
                 "accessToken", accessToken,
                 "refreshToken", refreshToken.getToken()
         ));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> invite (@RequestBody @Valid RegisterRequest registerRequest) throws PasswordException, EmailException {
-        AppUser appUser = appUserService.createPending(registerRequest.email, registerRequest.username, registerRequest.password);
-        VerificationToken token = verificationTokenService.createToken(appUser, VerificationToken.TokenType.REGISTRATION);
-        emailService.sendInviteLink(appUser, token.getToken());
-        return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/activate")
@@ -171,7 +169,9 @@ public class AuthController {
             @NotNull @Email String email,
             @NotNull String username,
             @NotNull String password,
-            @NotNull String role
+            @NotNull Long genderId,
+            @NotNull String role,
+            String location
     ) {
     }
 

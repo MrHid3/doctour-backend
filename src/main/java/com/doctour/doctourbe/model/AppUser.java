@@ -60,4 +60,11 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppUserStatus status = AppUserStatus.PENDING;
+
+    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Gender gender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Location location;
 }

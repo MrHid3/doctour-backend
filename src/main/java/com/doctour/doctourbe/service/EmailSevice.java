@@ -25,7 +25,7 @@ public class EmailSevice {
     @Value("${app.magic-link.expiry-hours}")
     private Integer expiryHours;
 
-    public void sendInviteLink(AppUser appUser, String token){
+    public void sendActiviationLink(AppUser appUser, String token){
 
         String link = frontendUrl + "/set-password?token=" + token;
 
