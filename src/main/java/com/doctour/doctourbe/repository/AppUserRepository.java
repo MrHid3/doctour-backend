@@ -1,5 +1,6 @@
 package com.doctour.doctourbe.repository;
 
+import com.doctour.doctourbe.exception.UuidException;
 import com.doctour.doctourbe.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,5 +15,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
 
     Optional<AppUser> findByUsername(String username) throws UsernameNotFoundException;
 
-    Optional<AppUser> findByUuid(UUID uuid) throws UsernameNotFoundException;
+    Optional<AppUser> findByUuid(UUID uuid);
+
+    Optional<AppUser> findByEmail(String email);
 }

@@ -1,5 +1,6 @@
 package com.doctour.doctourbe.component;
 
+import com.doctour.doctourbe.exception.PrivilegeNotFoundException;
 import com.doctour.doctourbe.model.Privilege;
 import com.doctour.doctourbe.model.Role;
 import com.doctour.doctourbe.repository.AppUserRepository;
@@ -53,10 +54,13 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     Privilege createPrivilegeIfNotFound(String name) {
 
-        Privilege privilege = privilegeRepository.findByName(name);
-        if (privilege == null) {
+        Optional<Privilege> optionalPrivilege = privilegeRepository.findByName(name);
+        Privilege privilege;
+        if (optionalPrivilege.isEmpty()) {
             privilege = new Privilege(name);
             privilegeRepository.save(privilege);
+        }else{
+            privilege = optionalPrivilege.get();
         }
         return privilege;
     }

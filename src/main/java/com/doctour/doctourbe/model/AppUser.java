@@ -1,10 +1,10 @@
 package com.doctour.doctourbe.model;
 
-import com.doctour.doctourbe.exception.InvalidPasswordException;
+import com.doctour.doctourbe.exception.PasswordException;
+import com.doctour.doctourbe.service.EncodingService;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.lang.module.InvalidModuleDescriptorException;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -20,22 +20,22 @@ public class AppUser {
 
     public AppUser(){};
 
-    public AppUser(String username, String password) throws InvalidPasswordException {
+    public AppUser(String username, String password) throws PasswordException {
         this.username = username;
         this.setPassword(password);
     }
 
-    public void setPassword(String password) throws InvalidPasswordException {
+    public void setPassword(String password, EncodingService encodingService) throws PasswordException {
         Pattern pattern = Pattern.compile("^((?=\\S*?[A-Z])(?=\\S*?[a-z])(?=\\S*?[0-9])(?=\\S*?[?!\\\\|'\";:+=-_()*&^%$#@<>,.`~\\[\\]{}/]).{8,})\\S$");
         Matcher matcher = pattern.matcher(password);
         if(!matcher.find()){
-            throw new InvalidPasswordException("Password is too easy");
+            throw new PasswordException("TOO_EASY");
         }
-        this.password = password;
+        this.password = encodingService.encodePassword(password);
     }
 
-    public void setPasswordHash(String password) {
-        this.password = password;
+    public enum AppUserStatus {
+        PENDING, ACTIVE
     }
 
     @Id
@@ -46,6 +46,8 @@ public class AppUser {
     private String username;
     private String password;
 
+    private String email;
+
     @ManyToMany
     @JoinTable(
             name = "users_roles",
@@ -54,4 +56,8 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AppUserStatus status = AppUserStatus.PENDING;
 }

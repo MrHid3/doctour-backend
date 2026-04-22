@@ -1,12 +1,10 @@
 package com.doctour.doctourbe;
 
-import com.doctour.doctourbe.exception.InvalidPasswordException;
-import com.doctour.doctourbe.exception.UsernameTakenException;
+import com.doctour.doctourbe.exception.PasswordException;
 import com.doctour.doctourbe.model.AppUser;
 import com.doctour.doctourbe.repository.AppUserRepository;
 import com.doctour.doctourbe.service.AppUserService;
 import com.doctour.doctourbe.service.EncodingService;
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +29,12 @@ public class AppUserServiceTest {
     private AppUserService appUserService;
 
     @Test
-    void saveAppUser() throws InvalidPasswordException {
+    void saveAppUser() throws PasswordException {
         AppUser user = new AppUser();
         user.setUuid(UUID.randomUUID());
         user.setUsername("bbb");
         user.setPassword("a!Aaaaaaa1a");
-        Assertions.assertDoesNotThrow(() -> appUserService.saveAppUser(user));
+        Assertions.assertDoesNotThrow(() -> appUserService.save(user));
         Assertions.assertNotNull(appUserService.findByUsername("bbb"));
     }
 }

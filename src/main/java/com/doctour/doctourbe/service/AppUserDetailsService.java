@@ -1,5 +1,6 @@
 package com.doctour.doctourbe.service;
 
+import com.doctour.doctourbe.exception.UuidException;
 import com.doctour.doctourbe.model.Privilege;
 import com.doctour.doctourbe.model.Role;
 import com.doctour.doctourbe.model.AppUser;
@@ -29,19 +30,19 @@ public class AppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<AppUser> optionalAppUser = appUserService.findByUsername(username);
         if (optionalAppUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("NOT_FOUND");
         }
         AppUser appUser = optionalAppUser.get();
-        return new User(appUser.getUsername(), appUser.getPassword(), getAuthoritiesList("USER"));
+        return new User(appUser.getUsername(), appUser.getPassword(), getGrantedAuthorities(appUser.getRoles()));
     }
 
-    public UserDetails loadUserByUuid(UUID uuid) throws UsernameNotFoundException{
+    public UserDetails loadUserByUuid(UUID uuid) throws UuidException {
         Optional<AppUser> optionalAppUser = appUserService.findByUuid(uuid);
         if (optionalAppUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UuidException("NOT_FOUND");
         }
         AppUser appUser = optionalAppUser.get();
-        return new User(appUser.getUsername(), appUser.getPassword(), getAuthoritiesList("USER"));
+        return new User(appUser.getUsername(), appUser.getPassword(), getGrantedAuthorities(appUser.getRoles()));
     }
 
     private Collection<GrantedAuthority> getAuthoritiesList(String role){
@@ -68,6 +69,14 @@ public class AppUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String privilege : privileges) {
             authorities.add(new SimpleGrantedAuthority(privilege));
+        }
+        return authorities;
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(Collection<Role> roles){
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
         return authorities;
     }

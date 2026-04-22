@@ -1,5 +1,6 @@
 package com.doctour.doctourbe.component;
 
+import com.doctour.doctourbe.exception.UuidException;
 import com.doctour.doctourbe.service.AppUserDetailsService;
 import com.doctour.doctourbe.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -41,7 +42,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if(jwtService.isTokenValid(token)) {
 
             UUID uuid = jwtService.extractUuid(token);
-            UserDetails userDetails = appUserDetailsService.loadUserByUuid(uuid);
+            UserDetails userDetails;
+            try{
+                userDetails = appUserDetailsService.loadUserByUuid(uuid);
+            }catch (UuidException e){
+                throw new ServletException("TOKEN_INVALID");
+            }
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 

@@ -1,6 +1,7 @@
 package com.doctour.doctourbe.config;
 
 import com.doctour.doctourbe.component.JwtAuthFilter;
+import com.doctour.doctourbe.exception.UsernameException;
 import com.doctour.doctourbe.service.AppUserDetailsService;
 import com.doctour.doctourbe.service.AuthenticationService;
 import com.doctour.doctourbe.service.CustomAuthenticationProvider;
@@ -14,11 +15,17 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 
 @Configuration
@@ -37,7 +44,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AppUserDetailsService appUserDetailsService) throws Exception{
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(CsrfConfigurer::spa)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((auth) -> auth
@@ -50,7 +57,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(AuthenticationService authenticationService) {
         return username -> authenticationService.loadUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow();
     }
 
     @Bean
@@ -61,6 +68,19 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(AppUserDetailsService appUserDetailsService, EncodingService encodingService){
         return new CustomAuthenticationProvider(appUserDetailsService, encodingService);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of()); // your Svelte dev URL
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // this tells Spring to accept credentialed requests
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
 }
