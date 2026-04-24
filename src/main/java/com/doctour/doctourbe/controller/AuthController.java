@@ -52,20 +52,27 @@ public class AuthController {
     private GenderService genderService;
 
     @Autowired
+    private LocationService locationService;
+
+    @Autowired
     private EncodingService encodingService;
 
     @PostMapping("/register")
     public ResponseEntity<String> registration(@RequestBody RegisterRequest req) throws UsernameException, PasswordException {
-        AppUser appUser = appUserService.createPending(req.email, req.username, req.password,
+        AppUser appUser;
+
+        appUser = appUserService.createPending(req.email, req.username, req.password,
                 roleService.findByName(req.role).orElseThrow(() -> new RoleException("INVALID")),
-                genderService.findById(req.genderId).orElseThrow(() -> new GenderException("INVALID")));
+                genderService.findById(req.genderId).orElseThrow(() -> new GenderException("INVALID"))
+        );
+
         VerificationToken vt = verificationTokenService.createToken(appUser, VerificationToken.TokenType.REGISTRATION);
         emailService.sendActiviationLink(appUser, vt.getToken());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = customAuthenticationProvider.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.email(),
                         loginRequest.password()));
@@ -82,10 +89,19 @@ public class AuthController {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(appUser);
 
-        return ResponseEntity.ok(Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken.getToken()
-        ));
+        Cookie rt = new Cookie("refreshToken", refreshToken.getToken());
+        rt.setHttpOnly(true);
+        rt.setSecure(true);
+        rt.setPath("/api/auth/refresh");
+        rt.setMaxAge(0);
+        response.addCookie(rt);
+
+        Cookie at = new Cookie("accessToken", accessToken);
+        at.setHttpOnly(true);
+        at.setSecure(true);
+        at.setMaxAge(900);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/activate")
@@ -98,15 +114,18 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> refresh(@CookieValue(name = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<?> refresh(@CookieValue(name = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
 
         return refreshTokenService.findValidToken(refreshToken)
                 .map(rt -> {
                     String newAccessToken = jwtService.generateAccessToken(
                             rt.getAppUser());
-                    return ResponseEntity.ok(newAccessToken);
-                })
-                .orElseThrow(() -> new TokenException("INVALID"));
+                    Cookie at = new Cookie("accessToken", newAccessToken);
+                    at.setHttpOnly(true);
+                    at.setSecure(true);
+                    at.setMaxAge(900);
+                    return ResponseEntity.ok().build();
+                }).orElseThrow(() -> new TokenException("INVALID"));
     }
 
     @PostMapping("/logout")
@@ -146,9 +165,9 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password/confirm")
-    public ResponseEntity<?> confirm(@RequestBody @Valid ConfirmRequest confirmRequest) throws PasswordException {
-        VerificationToken token = verificationTokenService.validateToken(confirmRequest.token(), VerificationToken.TokenType.PASSWORD_RESET);
-        appUserService.changePassword(token.getAppUser(), confirmRequest.password());
+    public ResponseEntity<?> confirm(@RequestBody @Valid ConfirmResetRequest req) throws PasswordException {
+        VerificationToken token = verificationTokenService.validateToken(req.token(), VerificationToken.TokenType.PASSWORD_RESET);
+        appUserService.changePassword(token.getAppUser(), req.password());
         verificationTokenService.consumeToken(token);
         return ResponseEntity.ok().build();
     }
@@ -171,11 +190,16 @@ public class AuthController {
             @NotNull String password,
             @NotNull Long genderId,
             @NotNull String role,
-            String location
+            Long locationId
     ) {
     }
 
     public record ConfirmRequest(
+            @NotNull String token
+    ) {
+    }
+
+    public record ConfirmResetRequest(
             @NotNull String token,
             @NotNull String password
     ){}

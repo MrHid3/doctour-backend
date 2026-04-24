@@ -18,16 +18,19 @@ public class GenderController {
     private GenderService genderService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(genderService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody CreateGenderRequest req){
+    public ResponseEntity<?> add(@RequestBody CreateGenderRequest req) {
         genderService.createGender(req.name, req.shortname);
         return ResponseEntity.ok().build();
     }
 
-    public record CreateGenderRequest(String name, String shortname){
+    public record CreateGenderRequest(
+            String name,
+            String shortname
+    ) {
     }
 }

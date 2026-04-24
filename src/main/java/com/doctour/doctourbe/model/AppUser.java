@@ -64,7 +64,4 @@ public class AppUser {
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Gender gender;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Location location;
 }

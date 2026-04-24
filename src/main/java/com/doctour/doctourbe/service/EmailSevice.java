@@ -27,7 +27,7 @@ public class EmailSevice {
 
     public void sendActiviationLink(AppUser appUser, String token){
 
-        String link = frontendUrl + "/set-password?token=" + token;
+        String link = frontendUrl + "/activateAccount?token=" + token;
 
         Context context = new Context();
         context.setVariable("link", link);
