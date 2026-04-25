@@ -1,9 +1,13 @@
 package com.doctour.doctourbe.component;
 
-import com.doctour.doctourbe.exception.PrivilegeNotFoundException;
+import com.doctour.doctourbe.exception.PasswordException;
+import com.doctour.doctourbe.exception.PrivilegeException;
+import com.doctour.doctourbe.model.AppUser;
+import com.doctour.doctourbe.model.Gender;
 import com.doctour.doctourbe.model.Privilege;
 import com.doctour.doctourbe.model.Role;
 import com.doctour.doctourbe.repository.AppUserRepository;
+import com.doctour.doctourbe.repository.GenderRepository;
 import com.doctour.doctourbe.repository.PrivilegeRepository;
 import com.doctour.doctourbe.repository.RoleRepository;
 import com.doctour.doctourbe.service.EncodingService;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -33,6 +38,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Autowired
     private EncodingService encodingService;
+    @Autowired
+    private GenderRepository genderRepository;
 
     @Override
     @Transactional
@@ -47,8 +54,21 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 //        Privilege addMembers = createPrivilageIfNotFound("CREATE_MEMBERS");
         Privilege setSchedule = createPrivilegeIfNotFound("SET_SCHEDULE");
         Privilege makeAppointment = createPrivilegeIfNotFound("MAKE_APPOINTMENT");
-        createRoleIfNotFound("ROLE_DOCTOR", Arrays.asList(setSchedule));
-        createRoleIfNotFound("ROLE_CUSTOMER", Arrays.asList(makeAppointment));
+
+        Role doctor = createRoleIfNotFound("ROLE_DOCTOR", Arrays.asList(setSchedule));
+        Role customer = createRoleIfNotFound("ROLE_CUSTOMER", Arrays.asList(makeAppointment));
+
+        Gender male = createGenderIfNotFound("Male", "N");
+        Gender female = createGenderIfNotFound("Female", "F");
+        createGenderIfNotFound("Other", "O");
+
+        try {
+            createUserIfNotFound("bob@gmail.com", "Bob Smith", male, AppUser.AppUserStatus.ACTIVE, "153753aB!", customer);
+            createUserIfNotFound("alice@gmail.com", "Alice Tung", female, AppUser.AppUserStatus.ACTIVE, "153753aB!", doctor);
+        } catch (PasswordException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Transactional
@@ -78,5 +98,44 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             role = optionalRole.get();
         }
         return role;
+    }
+
+    @Transactional
+    Gender createGenderIfNotFound(String name, String shortname) {
+
+        Gender gender;
+        Optional<Gender> optionalGender = genderRepository.findByName(name);
+        Optional<Gender> optionalGenderShort = genderRepository.findByShortname(shortname);
+        if(optionalGender.isEmpty() && optionalGenderShort.isEmpty()){
+            gender = new Gender();
+            gender.setName(name);
+            gender.setShortname(shortname);
+            genderRepository.save(gender);
+        }else if(optionalGender.isPresent()){
+            gender = optionalGender.get();
+        }else{
+            gender = optionalGenderShort.get();
+        }
+
+        return gender;
+    }
+
+    @Transactional
+    AppUser createUserIfNotFound(String email, String username, Gender gender, AppUser.AppUserStatus status, String password, Role role) throws PasswordException {
+
+        AppUser appUser;
+        Optional<AppUser> optionalUser = appUserRepository.findByEmail(email);
+        if(optionalUser.isEmpty()){
+            appUser = new AppUser();
+            appUser.setUsername(username);
+            appUser.setPassword(password, encodingService);
+            appUser.setGender(gender);
+            appUser.setRoles(List.of(role));
+            appUser.setStatus(status);
+        }else{
+            appUser = optionalUser.get();
+        }
+
+        return appUser;
     }
 }

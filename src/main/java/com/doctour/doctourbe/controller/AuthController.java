@@ -73,13 +73,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+
         Authentication authentication = customAuthenticationProvider.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.email(),
-                        loginRequest.password()));
+                new UsernamePasswordAuthenticationToken(loginRequest.email,
+                        loginRequest.password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         AppUser appUser = appUserService.findByEmail(loginRequest.email())
-                .orElseThrow(() -> new UsernameNotFoundException("NOT_FOUND"));
+                .orElseThrow(() -> new EmailException("NOT_FOUND"));
 
         if (appUser.getStatus() != AppUser.AppUserStatus.ACTIVE) {
             throw new AppUserException("NOT_ACTIVE");
@@ -91,15 +92,16 @@ public class AuthController {
 
         Cookie rt = new Cookie("refreshToken", refreshToken.getToken());
         rt.setHttpOnly(true);
-        rt.setSecure(true);
+        rt.setSecure(false); //remove for prod
         rt.setPath("/api/auth/refresh");
-        rt.setMaxAge(0);
+        rt.setMaxAge(60 * 60 * 24 * 30);
         response.addCookie(rt);
 
         Cookie at = new Cookie("accessToken", accessToken);
-        at.setHttpOnly(true);
-        at.setSecure(true);
-        at.setMaxAge(900);
+        at.setPath("/");
+        at.setSecure(false); //remove for prod
+        at.setMaxAge(60 * 15);
+        response.addCookie(at);
 
         return ResponseEntity.ok().build();
     }
@@ -174,8 +176,7 @@ public class AuthController {
 
     public record LoginRequest(
             @NotNull @Email String email,
-            @NotNull String password,
-            @NotNull String username
+            @NotNull String password
     ) {
     }
 

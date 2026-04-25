@@ -11,4 +11,8 @@ import java.util.Optional;
 public interface GenderRepository extends JpaRepository<Gender, Integer> {
 
     public Optional<Gender> findById(Long id);
+
+    public Optional<Gender> findByName(String name);
+
+    public Optional<Gender> findByShortname(String name);
 }

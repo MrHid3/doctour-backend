@@ -20,9 +20,9 @@ public class AppUser {
 
     public AppUser(){};
 
-    public AppUser(String username, String password) throws PasswordException {
+    public AppUser(String username, String password, EncodingService encodingService) throws PasswordException {
         this.username = username;
-        this.setPassword(password);
+        this.setPassword(password, encodingService);
     }
 
     public void setPassword(String password, EncodingService encodingService) throws PasswordException {
@@ -42,13 +42,15 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    @Column(unique = true)
     private String username;
+
+    @Setter(AccessLevel.NONE)
     private String password;
 
+    @Column(unique = true)
     private String email;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
@@ -62,6 +64,6 @@ public class AppUser {
     private AppUserStatus status = AppUserStatus.PENDING;
 
     @JoinColumn(nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Gender gender;
 }

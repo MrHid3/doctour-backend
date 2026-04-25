@@ -9,7 +9,6 @@ public record AppUserDTO(
     UUID uuid,
     String username,
     String email,
-    Gender gender,
-    Location location
+    Gender gender
     ){
 }

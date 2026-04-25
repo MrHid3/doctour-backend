@@ -1,15 +1,16 @@
 package com.doctour.doctourbe.service;
 
-import com.doctour.doctourbe.exception.UuidException;
+import com.doctour.doctourbe.exception.AppUserException;
+import com.doctour.doctourbe.exception.EmailException;
 import com.doctour.doctourbe.model.Privilege;
 import com.doctour.doctourbe.model.Role;
 import com.doctour.doctourbe.model.AppUser;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.*;
 
@@ -26,20 +27,21 @@ public class AppUserDetailsService implements UserDetailsService {
         this.appUserService = appUserService;
     }
 
+    @NullMarked
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AppUser> optionalAppUser = appUserService.findByUsername(username);
+    public UserDetails loadUserByUsername(String username) {
+        Optional<AppUser> optionalAppUser = appUserService.findByEmail(username);
         if (optionalAppUser.isEmpty()) {
-            throw new UsernameNotFoundException("NOT_FOUND");
+            throw new EmailException("NOT_FOUND");
         }
         AppUser appUser = optionalAppUser.get();
         return new User(appUser.getUsername(), appUser.getPassword(), getGrantedAuthorities(appUser.getRoles()));
     }
 
-    public UserDetails loadUserByUuid(UUID uuid) throws UuidException {
+    public UserDetails loadUserByUuid(UUID uuid) throws AppUserException {
         Optional<AppUser> optionalAppUser = appUserService.findByUuid(uuid);
         if (optionalAppUser.isEmpty()) {
-            throw new UuidException("NOT_FOUND");
+            throw new AppUserException("NOT_FOUND");
         }
         AppUser appUser = optionalAppUser.get();
         return new User(appUser.getUsername(), appUser.getPassword(), getGrantedAuthorities(appUser.getRoles()));

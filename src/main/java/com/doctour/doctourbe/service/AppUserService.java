@@ -1,7 +1,7 @@
 package com.doctour.doctourbe.service;
 
-import com.doctour.doctourbe.dto.AppUserDTO;
 import com.doctour.doctourbe.exception.EmailException;
+import com.doctour.doctourbe.exception.PasswordException;
 import com.doctour.doctourbe.model.Gender;
 import com.doctour.doctourbe.model.Location;
 import com.doctour.doctourbe.model.Role;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,15 +37,19 @@ public class AppUserService {
         return this.appUserRepository.findByEmail(email);
     }
 
+    public List<AppUser> findAllDoctors(){
+        return this.appUserRepository.findByRolesContains(roleService.findByName("ROLE_DOCTOR").orElseThrow(() -> new InternalException("ROLE_MISSING")));
+    }
+
     public Optional<AppUser> findByUuid(UUID uuid) {
         return this.appUserRepository.findByUuid(uuid);
     }
 
-        public AppUser createPending(String email, String username, String password, Role role, Gender gender) {
+        public AppUser createPending(String email, String username, String password, Role role, Gender gender) throws PasswordException {
         AppUser appUser = new AppUser();
         appUser.setEmail(email);
         appUser.setUsername(username);
-        appUser.setPassword(password);
+        appUser.setPassword(password, encodingService);
         appUser.setStatus(AppUser.AppUserStatus.PENDING);
         appUser.setRoles(List.of(role));
         appUser.setGender(gender);
@@ -52,15 +57,14 @@ public class AppUserService {
         return appUser;
     }
 
-    public AppUser createPending(String email, String username, String password, Role role, Gender gender, Location location) {
+    public AppUser createPending(String email, String username, String password, Role role, Gender gender, Location location) throws PasswordException {
         AppUser appUser = new AppUser();
         appUser.setEmail(email);
         appUser.setUsername(username);
-        appUser.setPassword(password);
+        appUser.setPassword(password, encodingService);
         appUser.setStatus(AppUser.AppUserStatus.PENDING);
         appUser.setRoles(List.of(role));
         appUser.setGender(gender);
-        appUser.setLocation(location);
         this.save(appUser);
         return appUser;
     }
@@ -75,8 +79,8 @@ public class AppUserService {
         this.save(appUser);
     }
 
-    public void changePassword(AppUser appUser, String password){
-        appUser.setPassword(password);
+    public void changePassword(AppUser appUser, String password) throws PasswordException {
+        appUser.setPassword(password, encodingService);
         this.save(appUser);
     }
 

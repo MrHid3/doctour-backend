@@ -14,6 +14,6 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     Optional<Location> findById(long id);
 
     @Modifying
-    @Query("DELETE FROM location l LEFT JOIN app_user a ON a.location_id = l.id WHERE a.uuid IS NULL")
+    @Query(value = "DELETE FROM location WHERE id NOT IN (SELECT location_id FROM app_user WHERE location_id IS NOT NULL)", nativeQuery = true)
     void deleteUnused();
 }

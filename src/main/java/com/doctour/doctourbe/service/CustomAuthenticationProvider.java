@@ -1,5 +1,6 @@
 package com.doctour.doctourbe.service;
 
+import com.doctour.doctourbe.exception.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,11 +32,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
 
         if(userDetails == null){
-            throw new UsernameNotFoundException("User not found");
+            throw new EmailException("NOT_FOUND");
         }
 
         if(!encodingService.passwordMatches(password, userDetails.getPassword())){
-            throw new BadCredentialsException("Invalid password");
+            throw new BadCredentialsException("INVALID");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());

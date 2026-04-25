@@ -1,11 +1,11 @@
 package com.doctour.doctourbe.repository;
 
-import com.doctour.doctourbe.exception.UuidException;
 import com.doctour.doctourbe.model.AppUser;
 import com.doctour.doctourbe.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,4 +22,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
     Optional<AppUser> findByEmail(String email);
 
     Optional<AppUser> findByUuidAndRolesIs(UUID uuid, Collection<Role> roles);
+
+    List<AppUser> findByRolesContains(Role role);
 }

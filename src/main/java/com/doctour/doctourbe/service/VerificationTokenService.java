@@ -44,13 +44,13 @@ public class VerificationTokenService {
 
     public VerificationToken validateToken(String raw, VerificationToken.TokenType expectedType){
         VerificationToken token = verificationTokenRepository.findByTokenAndType(raw, expectedType)
-                .orElseThrow(() -> new TokenException("TOKEN_NOT_FOUND"));
+                .orElseThrow(() -> new TokenException("NOT_FOUND"));
 
         if (token.getUsed()){
-            throw new TokenException("TOKEN_ALREADY_USED");
+            throw new TokenException("ALREADY_USED");
         }
         if(token.getExpiryDate().isBefore(LocalDateTime.now())){
-            throw new TokenException("TOKEN_EXPIRED");
+            throw new TokenException("EXPIRED");
         }
         return token;
     }

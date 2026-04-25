@@ -6,19 +6,26 @@ import com.doctour.doctourbe.model.AppUser;
 import com.doctour.doctourbe.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping("/api/doctor")
 public class DoctorController {
 
     @Autowired
     private AppUserService appUserService;
+
+    @GetMapping
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(
+                appUserService.findAllDoctors().stream().map((this::toDTO))
+        );
+    }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<?> getDoctor(@PathVariable String uuid) {
@@ -37,8 +44,7 @@ public class DoctorController {
                 appUser.getUuid(),
                 appUser.getUsername(),
                 appUser.getEmail(),
-                appUser.getGender(),
-                appUser.getLocation()
+                appUser.getGender()
         );
     }
 }

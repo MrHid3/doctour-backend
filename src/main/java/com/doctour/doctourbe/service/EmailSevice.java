@@ -13,7 +13,10 @@ import org.thymeleaf.context.Context;
 @Service
 public class EmailSevice {
 
+    @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
     private TemplateEngine templateEngine;
 
     @Value("${app.frontend-url}")
