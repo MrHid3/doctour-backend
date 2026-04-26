@@ -1,16 +1,14 @@
 package com.doctour.doctourbe.controller;
 
+import com.doctour.doctourbe.exception.GenderException;
 import com.doctour.doctourbe.model.Gender;
 import com.doctour.doctourbe.service.GenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/api/gender")
 public class GenderController {
 
@@ -26,6 +24,11 @@ public class GenderController {
     public ResponseEntity<?> add(@RequestBody CreateGenderRequest req) {
         genderService.createGender(req.name, req.shortname);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Gender> getGender(@PathVariable Long id){
+        return ResponseEntity.ok(genderService.findById(id).orElseThrow(() -> new GenderException("INVALID")));
     }
 
     public record CreateGenderRequest(

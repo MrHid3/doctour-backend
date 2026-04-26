@@ -81,4 +81,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
+    @ExceptionHandler(SpecializationException.class)
+    public ResponseEntity<String> handleSpecializationException(SpecializationException ex){
+        return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "SPECIALIZATION"));
+    }
+
+    @ExceptionHandler(AvailabilityException.class)
+    public ResponseEntity<String> handleAvailabilityException(AvailabilityException ex){
+        return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "AVAILABILITY"));
+    }
+
+    @ExceptionHandler(AppointmentException.class)
+    public ResponseEntity<String> handleAppointmentException(AppointmentException ex){
+        return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "APPOINTMENT"));
+    }
 }

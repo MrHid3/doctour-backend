@@ -22,12 +22,15 @@ public class LocationService {
     }
 
     @Transactional
-    public Location createLocation(String name, String description, BigDecimal latitude, BigDecimal longitude) {
+    public Location createLocation(String name, String description, BigDecimal latitude, BigDecimal longitude, String city, String address, String postalCode) {
         Location location = new Location();
         location.setName(name);
         location.setDescription(description);
         location.setLatitude(latitude);
         location.setLongitude(longitude);
+        location.setPostalCode(postalCode);
+        location.setCity(city);
+        location.setAddress(address);
         locationRepository.save(location);
         return location;
     }

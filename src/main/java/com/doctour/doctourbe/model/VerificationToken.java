@@ -1,6 +1,7 @@
 package com.doctour.doctourbe.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,7 @@ public class VerificationToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     private String uuid;
 
     @Column(nullable = false)

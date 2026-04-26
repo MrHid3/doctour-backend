@@ -1,6 +1,8 @@
 package com.doctour.doctourbe.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,17 +10,13 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Gender {
-
+public class Specialization {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(unique = true)
     private String name;
 
-
-    @Column(unique = true)
-    private String shortname;
+    private String description;
 }

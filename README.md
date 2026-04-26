@@ -10,7 +10,6 @@
 - [ ] anulowanie itd, system powiadomień
 - [ ] szukanie lekarzy po lokalizacji
 - [ ] powiadomienia do pulpitu w stylu "hej jutro operacja kolan"???
-- [ ] gift cardy???
 
 ## Endpointy:
 

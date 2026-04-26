@@ -40,6 +40,7 @@ public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     private String username;
@@ -50,7 +51,7 @@ public class AppUser {
     @Column(unique = true)
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
@@ -66,4 +67,7 @@ public class AppUser {
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private Gender gender;
+
+    @OneToMany
+    private Collection<Availability> availabilities;
 }
