@@ -44,7 +44,7 @@ public class AppUserDetailsService implements UserDetailsService {
             throw new AppUserException("NOT_FOUND");
         }
         AppUser appUser = optionalAppUser.get();
-        return new User(appUser.getUsername(), appUser.getPassword(), getGrantedAuthorities(appUser.getRoles()));
+        return new User(appUser.getEmail(), appUser.getPassword(), getGrantedAuthorities(appUser.getRoles()));
     }
 
     private Collection<GrantedAuthority> getAuthoritiesList(String role){

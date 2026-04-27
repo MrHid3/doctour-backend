@@ -20,16 +20,20 @@ public class Availability {
     @Setter(AccessLevel.NONE)
     private UUID uuid;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonBackReference
     private AppUser appUser;
 
-    private LocalTime start;
+    @Column(nullable = false)
+    private LocalTime startTime;
 
-    private LocalTime end;
+    @Column(nullable = false)
+    private LocalTime endTime;
 
+    @Column(nullable = false)
     private DayOfWeek dayOfWeek;
 
-    @OneToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "location_id")
     private Location location;
 }

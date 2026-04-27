@@ -47,7 +47,7 @@ public class SpecializationService {
 
     @Scheduled(cron = "0 0 3 * * *")
     @Transactional
-    protected void deleteUnused(){
+    public void deleteUnused(){
         specializationRepository.deleteUnused();
     }
 }

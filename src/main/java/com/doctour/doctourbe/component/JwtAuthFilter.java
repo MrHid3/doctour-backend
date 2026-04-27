@@ -1,6 +1,7 @@
 package com.doctour.doctourbe.component;
 
 import com.doctour.doctourbe.exception.AppUserException;
+import com.doctour.doctourbe.exception.TokenException;
 import com.doctour.doctourbe.service.AppUserDetailsService;
 import com.doctour.doctourbe.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -56,7 +57,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try{
                 userDetails = appUserDetailsService.loadUserByUuid(uuid);
             }catch (AppUserException e){
-                throw new ServletException("TOKEN_INVALID");
+                throw new TokenException("INVALID");
             }
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -64,7 +65,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }else{
-            throw new ServletException("TOKEN_INVALID");
+            throw new TokenException("INVALID");
         }
 
         filterChain.doFilter(request, response);

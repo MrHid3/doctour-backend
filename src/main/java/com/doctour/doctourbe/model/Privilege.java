@@ -1,5 +1,6 @@
 package com.doctour.doctourbe.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,5 +28,6 @@ public class Privilege {
     private String name;
 
     @ManyToMany(mappedBy = "privileges")
+    @JsonBackReference
     private Collection<Role> roles;
 }

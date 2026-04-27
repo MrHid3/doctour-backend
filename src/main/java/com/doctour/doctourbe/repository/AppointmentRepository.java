@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AppointentRepository extends JpaRepository<Appointment, UUID> {
+public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
 
     public Optional<Appointment> findAppointmentByUuid(UUID uuid);
 
@@ -20,7 +20,7 @@ public interface AppointentRepository extends JpaRepository<Appointment, UUID> {
 
     public List<Appointment> findAppointmentsByDoctor(AppUser doctor);
 
-    public List<Appointment> findAppointmentsByCustomerAndDoctorAndDateAndEndAfterOrStartBeforeOrStartIsOrEndIs(AppUser customer, AppUser doctor, LocalDate date, LocalTime start, LocalTime end, LocalTime start2, LocalTime end2);
+    public List<Appointment> findAppointmentsByDoctorAndDate(AppUser doctor, LocalDate date);
 
     public List<Appointment> findByDate(LocalDate date);
 }

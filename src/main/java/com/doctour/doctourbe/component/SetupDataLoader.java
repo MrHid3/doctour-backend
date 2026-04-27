@@ -10,7 +10,10 @@ import com.doctour.doctourbe.repository.AppUserRepository;
 import com.doctour.doctourbe.repository.GenderRepository;
 import com.doctour.doctourbe.repository.PrivilegeRepository;
 import com.doctour.doctourbe.repository.RoleRepository;
+import com.doctour.doctourbe.service.AppUserService;
 import com.doctour.doctourbe.service.EncodingService;
+import com.doctour.doctourbe.service.GenderService;
+import com.doctour.doctourbe.service.RoleService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -27,19 +30,21 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     boolean alreadySetup = false;
 
-    @Autowired
-    private AppUserRepository appUserRepository;
+    private final EncodingService encodingService;
+    private final AppUserService appUserService;
+    private final GenderService genderService;
+    private final RoleService roleService;
+    private final RoleRepository roleRepository;
+    private final PrivilegeRepository privilegeRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PrivilegeRepository privilegeRepository;
-
-    @Autowired
-    private EncodingService encodingService;
-    @Autowired
-    private GenderRepository genderRepository;
+    public SetupDataLoader(EncodingService encodingService, AppUserService appUserService, GenderService genderService, RoleService roleService, RoleRepository roleRepository, PrivilegeRepository privilegeRepository) {
+        this.encodingService = encodingService;
+        this.appUserService = appUserService;
+        this.genderService = genderService;
+        this.roleService = roleService;
+        this.roleRepository = roleRepository;
+        this.privilegeRepository = privilegeRepository;
+    }
 
     @Override
     @Transactional
@@ -89,7 +94,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     Role createRoleIfNotFound(String name, Collection<Privilege> privileges) {
 
         Role role;
-        Optional<Role> optionalRole = roleRepository.findByName(name);
+        Optional<Role> optionalRole = roleService.findByName(name);
         if (optionalRole.isEmpty()) {
             role = new Role(name);
             role.setPrivileges(privileges);
@@ -104,18 +109,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     Gender createGenderIfNotFound(String name, String shortname) {
 
         Gender gender;
-        Optional<Gender> optionalGender = genderRepository.findByName(name);
-        Optional<Gender> optionalGenderShort = genderRepository.findByShortname(shortname);
+        Optional<Gender> optionalGender = genderService.findByName(name);
+        Optional<Gender> optionalGenderShort = genderService.findByShortname(shortname);
         if(optionalGender.isEmpty() && optionalGenderShort.isEmpty()){
             gender = new Gender();
             gender.setName(name);
             gender.setShortname(shortname);
-            genderRepository.save(gender);
-        }else if(optionalGender.isPresent()){
-            gender = optionalGender.get();
-        }else{
-            gender = optionalGenderShort.get();
-        }
+            genderService.save(gender);
+        }else gender = optionalGender.orElseGet(optionalGenderShort::get);
 
         return gender;
     }
@@ -124,14 +125,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     AppUser createUserIfNotFound(String email, String username, Gender gender, AppUser.AppUserStatus status, String password, Role role) throws PasswordException {
 
         AppUser appUser;
-        Optional<AppUser> optionalUser = appUserRepository.findByEmail(email);
+        Optional<AppUser> optionalUser = appUserService.findByEmail(email);
         if(optionalUser.isEmpty()){
             appUser = new AppUser();
             appUser.setUsername(username);
+            appUser.setEmail(email);
             appUser.setPassword(password, encodingService);
             appUser.setGender(gender);
             appUser.setRoles(List.of(role));
             appUser.setStatus(status);
+            appUserService.save(appUser);
         }else{
             appUser = optionalUser.get();
         }

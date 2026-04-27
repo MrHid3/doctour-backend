@@ -26,7 +26,7 @@ public class SpecializationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Specialization> getSpecialization(@PathVariable Long id){
-        return ResponseEntity.ok(specializationService.findById(id).orElseThrow(() -> new SpecializationException("INVALID")));
+        return ResponseEntity.ok(specializationService.findById(id).orElseThrow(() -> new SpecializationException("NOT_FOUND")));
     }
 
     @PostMapping()

@@ -45,7 +45,7 @@ public class AvailabilityController {
         }
 
         availabilityService.create(
-                appUserService.findByEmail(auth.getName()).orElseThrow(() -> new AppUserException("INVALID")),
+                appUserService.findByEmail(auth.getName()).get(),
                 locationService.findById(req.locationId).orElseThrow(() -> new LocationException("INVALID")),
                 DayOfWeek.of(req.dayOfWeek),
                 LocalTime.parse(req.start),
@@ -74,6 +74,25 @@ public class AvailabilityController {
                 LocalTime.parse(req.start),
                 LocalTime.parse(req.end)
         );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<?> delete(@PathVariable String uuid){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Availability av = availabilityService.findByUuid(UUID.fromString(uuid)).orElseThrow(() -> new AvailabilityException("NOT_EXIST"));
+
+        if (av.getAppUser() != appUserService.findByEmail(auth.getName()).get()) {
+            throw new AvailabilityException("NO_ACCESS");
+        }
+
+        availabilityService.delete(av);
 
         return ResponseEntity.ok().build();
     }

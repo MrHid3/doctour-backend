@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body style="font-family: sans-serif; color: #333;">
+<p style="color: black;">Doctour</p>
+<p>Drogi użytkowniku, uprzejmie informujemy o przesunięciu Państwa wizyty z <span th:text="${originalDate}"></span> na <span th:text="${newDate}"></span></p>
+<p>Kliknij <a th:href="${link}"></a> aby ją zobaczyć</p>
+</body>
+</html>

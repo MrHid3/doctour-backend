@@ -2,11 +2,8 @@ package com.doctour.doctourbe.service;
 
 import com.doctour.doctourbe.exception.EmailException;
 import com.doctour.doctourbe.exception.PasswordException;
-import com.doctour.doctourbe.model.Gender;
-import com.doctour.doctourbe.model.Location;
-import com.doctour.doctourbe.model.Role;
+import com.doctour.doctourbe.model.*;
 import com.doctour.doctourbe.repository.AppUserRepository;
-import com.doctour.doctourbe.model.AppUser;
 import org.apache.logging.log4j.util.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -70,8 +67,8 @@ public class AppUserService {
     }
 
     public Optional<AppUser> findDoctor(UUID uuid) {
-        Role doctor = roleService.findByName("ROLE_DOCTOR").orElseThrow(() -> new InternalException(""));
-        return this.appUserRepository.findByUuidAndRolesIs(uuid,  List.of(doctor));
+        Role doctor = roleService.findByName("ROLE_DOCTOR").get();
+        return this.appUserRepository.findByUuidAndRolesContains(uuid,  doctor);
     }
 
     public void activate(AppUser appUser) {
@@ -81,6 +78,34 @@ public class AppUserService {
 
     public void changePassword(AppUser appUser, String password) throws PasswordException {
         appUser.setPassword(password, encodingService);
+        this.save(appUser);
+    }
+
+    public void addSpecialization(AppUser appUser, Specialization specialization){
+       Collection<Specialization> appUserSpecs = appUser.getSpecializations();
+       appUserSpecs.add(specialization);
+       appUser.setSpecializations(appUserSpecs);
+       this.save(appUser);
+    }
+
+    public void removeSpecialization(AppUser appUser, Specialization specialization){
+        Collection<Specialization> appUserSpecs = appUser.getSpecializations();
+        appUserSpecs.remove(specialization);
+        appUser.setSpecializations(appUserSpecs);
+        this.save(appUser);
+    }
+
+    public void addAvailability(AppUser appUser, Availability availability){
+        Collection<Availability> appUserAvals = appUser.getAvailabilities();
+        appUserAvals.add(availability);
+        appUser.setAvailabilities(appUserAvals);
+        this.save(appUser);
+    }
+
+    public void removeAvailability(AppUser appUser, Availability availability){
+        Collection<Availability> appUserAvals = appUser.getAvailabilities();
+        appUserAvals.remove(availability);
+        appUser.setAvailabilities(appUserAvals);
         this.save(appUser);
     }
 

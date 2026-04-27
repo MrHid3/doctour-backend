@@ -41,17 +41,20 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)
+    @Column(nullable = false)
     private UUID uuid;
 
+    @Column(nullable = false)
     private String username;
 
     @Setter(AccessLevel.NONE)
+    @Column(nullable = false)
     private String password;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
@@ -68,6 +71,9 @@ public class AppUser {
     @ManyToOne(fetch = FetchType.EAGER)
     private Gender gender;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private Collection<Availability> availabilities;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Collection<Specialization> specializations;
 }

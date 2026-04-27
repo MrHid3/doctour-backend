@@ -1,1 +1,9 @@
-<img src="https://i.countdownmail.com/4zzdo3.gif?end_date_time=2026-04-28T12:09:22+00:00" style="width:100%!important;" border="0" alt="countdownmail.com"/>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body style="font-family: sans-serif; color: #333;">
+<p style="color: black;">Doctour</p>
+<p>Drogi użytkowniku, przypominamy o twojej jutrzejszej wizycie</p>
+<img th:src="${countdownGifUrl}" style="width:100%!important;" border="0" alt="countdownmail.com"/>
+<p>Kliknij <a th:href="${link}">tutaj</a>, aby ją zobaczyć</p>
+</body>
+</html>

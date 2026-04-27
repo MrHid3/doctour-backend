@@ -1,12 +1,10 @@
 package com.doctour.doctourbe.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.locationtech.jts.geom.Point;
 
 import java.math.BigDecimal;
 
@@ -20,6 +18,7 @@ public class Location {
     @Setter(AccessLevel.NONE)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private String description;
@@ -30,7 +29,6 @@ public class Location {
 
     private String address;
 
-    private BigDecimal latitude;
-
-    private BigDecimal longitude;
+    @Column(columnDefinition = "geography(Point, 4326)")
+    private Point coordinates;
 }

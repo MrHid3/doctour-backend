@@ -15,10 +15,10 @@ public class Gender {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
 
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String shortname;
 }

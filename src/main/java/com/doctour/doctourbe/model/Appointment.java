@@ -33,7 +33,7 @@ public class Appointment {
 
     private LocalDate date;
 
-    private LocalTime start;
+    private LocalTime startTime;
 
-    private LocalTime end;
+    private LocalTime endTime;
 }

@@ -1,5 +1,6 @@
 package com.doctour.doctourbe.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,10 +27,8 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Collection<AppUser> users;
-
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinTable(
             name = "roles_privileges",
             joinColumns = @JoinColumn(
