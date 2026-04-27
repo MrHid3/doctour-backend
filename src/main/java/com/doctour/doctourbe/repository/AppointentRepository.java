@@ -20,5 +20,7 @@ public interface AppointentRepository extends JpaRepository<Appointment, UUID> {
 
     public List<Appointment> findAppointmentsByDoctor(AppUser doctor);
 
-    public List<Appointment> findAppointmentsByCustomerAndDoctorAndDateAndEndAfterOrStartBefore(AppUser customer, AppUser doctor, LocalDate date, LocalTime start, LocalTime end);
+    public List<Appointment> findAppointmentsByCustomerAndDoctorAndDateAndEndAfterOrStartBeforeOrStartIsOrEndIs(AppUser customer, AppUser doctor, LocalDate date, LocalTime start, LocalTime end, LocalTime start2, LocalTime end2);
+
+    public List<Appointment> findByDate(LocalDate date);
 }

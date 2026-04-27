@@ -1,6 +1,7 @@
 package com.doctour.doctourbe.service;
 
 import com.doctour.doctourbe.model.AppUser;
+import com.doctour.doctourbe.model.Appointment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -68,5 +69,15 @@ public class EmailSevice {
         };
 
         mailSender.send(preparator);
+    }
+
+    public void sendReminder(Appointment appointment){
+
+        String link = frontendUrl + "/appointment/" + appointment.getUuid().toString();
+
+        Context context = new Context();
+        context.setVariable("link", link);
+
+
     }
 }

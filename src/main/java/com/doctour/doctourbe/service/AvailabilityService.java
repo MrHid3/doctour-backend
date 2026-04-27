@@ -40,13 +40,16 @@ public class AvailabilityService {
     }
 
     public boolean isAvailable(AppUser doctor, DayOfWeek dayOfWeek, LocalTime start, LocalTime end, Location location){
-        return availabilityRepository.findAvailabilitiesByAppUserAndDayOfWeekAndStartBeforeAndEndAfterAndLocation(doctor, dayOfWeek, start, end, location).isEmpty();
+        return availabilityRepository.findAvailabilitiesByAppUserAndDayOfWeekAndStartBeforeOrStartIsAndEndAfterOrStartIsAndLocation(doctor, dayOfWeek, start, start, end, end, location).isEmpty();
     }
 
     @Transactional
     public Availability create(AppUser appUser, Location location, DayOfWeek day, LocalTime start, LocalTime end){
         if(!availabilityRepository.findAvailabilitiesByAppUserAndDayOfWeekAndStartAfterOrEndBefore(appUser, day, start, end).isEmpty()){
             throw new AvailabilityException("TAKEN");
+        }
+        if(start.isBefore(end)){
+            throw new AvailabilityException("START_BEFORE_END");
         }
         Availability av = new Availability();
         av.setAppUser(appUser);

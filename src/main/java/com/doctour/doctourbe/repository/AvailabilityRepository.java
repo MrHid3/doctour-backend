@@ -22,5 +22,5 @@ public interface AvailabilityRepository extends JpaRepository<Availability, UUID
 
     List<Availability> findAvailabilitiesByAppUserAndDayOfWeekAndStartAfterOrEndBefore(AppUser appUser, DayOfWeek day, LocalTime start, LocalTime end);
 
-    List<Availability> findAvailabilitiesByAppUserAndDayOfWeekAndStartBeforeAndEndAfterAndLocation(AppUser appUser, DayOfWeek day, LocalTime start, LocalTime end, Location location);
+    List<Availability> findAvailabilitiesByAppUserAndDayOfWeekAndStartBeforeOrStartIsAndEndAfterOrStartIsAndLocation(AppUser appUser, DayOfWeek day, LocalTime start, LocalTime start2, LocalTime end, LocalTime end2, Location location);
 }
