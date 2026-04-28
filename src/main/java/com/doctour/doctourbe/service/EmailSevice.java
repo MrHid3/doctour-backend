@@ -12,7 +12,11 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 @Service
 public class EmailSevice {
@@ -104,7 +108,8 @@ public class EmailSevice {
         context.setVariable("link", link);
 
         context.setVariable("countdownGifUrl", "https://i.countdownmail.com/4zzdo3.gif?end_date_time="
-                + appointment.getDate().toString() + "T" + appointment.getStartTime().toString() + ":00+00:00");
+                + appointment.getDate().toString() + "T" + appointment.getStartTime().format(DateTimeFormatter.ISO_LOCAL_TIME) + ZoneId.of("Europe/Warsaw").getRules().getOffset(LocalDateTime.now()));
+
 
         String html = templateEngine.process("email/reminder", context);
 

@@ -46,12 +46,12 @@ Powodzenia!
 
 ## Featuresy:
 
-- dostępność - każdy lekarz może rozpisać swój grafik na każdy tydzień
-- wizyty - użytkownicy mogę się wpisywać lekarzowi w ten grafik, jednocześnie nie nachodząc na siebie
-- lokalizacje - każdy lekarz może zapisać kiedy jest w wybranych lokalizacjach. Użytkownicy mogą również szukać lekarzy, którzy praktykują w ich okolicy
-- powiadomienia - użytkownicy dostają mailem powiadomienia o zmianie terminu wizyty oraz przypomnienie dzień przed wizytą
-- Global Gender Index - jeżeli użytkownikowi nie odpowiada żadna z podanych opcji płci, może on dodać własną opcję, która będzie później dostępna dla wszystkich innych użytkowników
-- specjalizacje - lekarze mogą deklarować swoje specjalizacje
+- **dostępność** - każdy lekarz może rozpisać swój grafik na każdy tydzień
+- **wizyty** - użytkownicy mogę się wpisywać lekarzowi w ten grafik, jednocześnie nie nachodząc na siebie
+- **lokalizacje** - każdy lekarz może zapisać kiedy jest w wybranych lokalizacjach. Użytkownicy mogą również szukać lekarzy, którzy praktykują w ich okolicy
+- **powiadomienia** - użytkownicy dostają mailem powiadomienia o zmianie terminu wizyty oraz przypomnienie dzień przed wizytą (z *pięknym* zegarkiem odliczającym do tego terminu!)
+- **Global Gender Index** - jeżeli użytkownikowi nie odpowiada żadna z podanych opcji płci, może on dodać własną opcję, która będzie później dostępna dla wszystkich innych użytkowników
+- **specjalizacje** - lekarze mogą deklarować swoje specjalizacje
 
 ---
 
