@@ -15,6 +15,7 @@ Witaj w README powalająco szybkiego, dynamicznie skalujący i modułowo dostoso
 - [x] użytkownik może się do niego umówić
 - [x] anulowanie itd, system powiadomień
 - [x] szukanie lekarzy po lokalizacji
+- [ ] feature flagi w envie
 
 # Jak to coś odpalić
 
