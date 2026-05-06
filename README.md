@@ -1,4 +1,4 @@
-                                                                    ███                                                   
+                                                                    ███
                                                                    ██ ██                          
                                                                   ██   ██                         
                                                                  ██     ██                        
@@ -10,6 +10,7 @@
     ██     ██   ██      █   █           ██     █          ██      ██     █     ██   ██   ██      █
     ██     ██   ██     ██   ██          ██     ██         ██      ██     █     ██   ██   ██      █
       ████  █     █████       █████     ██       ██████   ██      ██     █     ██   ██   ██      █
+
 ---
 
 Witaj w README powalająco szybkiego, dynamicznie skalującego i modułowo dostosowanego do potrzeb każdego klienta API *doktermin* (nazwa wymyślona z pomocą [namenssuchmaschine](https://github.com/HexHyperion/namenssuchmaschine)). Poniżej jest napisana na kolanie dokumentacja na niego. Nawet nie mam nadzieji że nie będzie pytań.
