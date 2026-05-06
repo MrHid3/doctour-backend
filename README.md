@@ -56,6 +56,8 @@ java -jar target/whatever-sie-tu-stworzy
    - do rzeczy mailowych polecam mailtrapa
    - frontend_url - url na którym będzie twój frontend, śłuży do linkowania do niego w mailach
    - JWT_SECRET - jakiś długi, losowy string
+   - ENABLE_CSRF - włącza lub wyłącza csrf, które może być uciążliwe przy ręcznym pisaniu requestów
+   - ENABLE_REGISTRATION_EMAIL - włącza lub wyłącza wysyłanie maila z linkiem aktywacyjnym przy rejestracji, automatycznie aktywuje użytkownika
 
 # Dokumentacja API
 

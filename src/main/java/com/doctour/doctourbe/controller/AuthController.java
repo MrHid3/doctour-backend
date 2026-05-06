@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -57,6 +58,9 @@ public class AuthController {
     @Autowired
     private EncodingService encodingService;
 
+    @Value("${app.debug.registration-email-toggle}")
+    private Boolean registrationToggle;
+
     @PostMapping("/register")
     public ResponseEntity<String> registration(@RequestBody RegisterRequest req) throws UsernameException, PasswordException {
         AppUser appUser;
@@ -66,8 +70,12 @@ public class AuthController {
                 genderService.findById(req.genderId).orElseThrow(() -> new GenderException("INVALID"))
         );
 
-        VerificationToken vt = verificationTokenService.createToken(appUser, VerificationToken.TokenType.REGISTRATION);
-        emailService.sendActiviationLink(appUser, vt.getToken());
+        if(registrationToggle) {
+            appUser.setStatus(AppUser.AppUserStatus.ACTIVE);
+        }else{
+            VerificationToken vt = verificationTokenService.createToken(appUser, VerificationToken.TokenType.REGISTRATION);
+            emailService.sendActiviationLink(appUser, vt.getToken());
+        }
         return ResponseEntity.ok().build();
     }
 

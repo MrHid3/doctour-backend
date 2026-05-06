@@ -1,12 +1,12 @@
 package com.doctour.doctourbe.config;
 
 import com.doctour.doctourbe.component.JwtAuthFilter;
-import com.doctour.doctourbe.exception.UsernameException;
 import com.doctour.doctourbe.service.AppUserDetailsService;
 import com.doctour.doctourbe.service.AuthenticationService;
 import com.doctour.doctourbe.service.CustomAuthenticationProvider;
 import com.doctour.doctourbe.service.EncodingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +15,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -45,16 +42,24 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
+    @Value("${app.debug.csrf-toggle}")
+    private Boolean csrfToggle;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AppUserDetailsService appUserDetailsService) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AppUserDetailsService appUserDetailsService) throws Exception {
         CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName(null);
         http
-//                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**", "/api/gender")
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                        .csrfTokenRequestHandler(requestHandler))
-                .csrf(AbstractHttpConfigurer::disable) //enable for prod
+                .csrf(csrf -> {
+                    if (csrfToggle) {
+                        csrf.ignoringRequestMatchers("/api/auth/**", "/api/gender")
+                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                                .csrfTokenRequestHandler(requestHandler);
+                    } else {
+                        csrf.disable();
+                    }
+                })
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((auth) -> auth
@@ -77,7 +82,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(AppUserDetailsService appUserDetailsService, EncodingService encodingService){
+    public AuthenticationProvider authenticationProvider(AppUserDetailsService appUserDetailsService, EncodingService encodingService) {
         return new CustomAuthenticationProvider(appUserDetailsService, encodingService);
     }
 
