@@ -9,90 +9,95 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private String messageToError(String message, String errorClass){
+    private Map<String, String> messageToError(String message, String errorClass){
+        HashMap<String, String> errorMap = new HashMap<>();
         if(message.isEmpty()){
-            return errorClass +
-                    "EXCEPTION";
+            errorMap.put("error", errorClass +
+                    "EXCEPTION");
         }else{
-            return errorClass +
+            errorMap.put("error", errorClass +
                     "_" +
-                    message;
+                    message);
         }
+        return errorMap;
     }
 
-    @ExceptionHandler(AppUserException.class)
-    public ResponseEntity<String> handleAppUserException(AppUserException ex) {
+    @ExceptionHandler(value = AppUserException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleAppUserException(AppUserException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "USER"));
     }
 
-    @ExceptionHandler(EmailException.class)
-    public ResponseEntity<String> handleEmailException(EmailException ex) {
+    @ExceptionHandler(value = EmailException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleEmailException(EmailException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "EMAIL"));
     }
 
-    @ExceptionHandler(GenderException.class)
-    public ResponseEntity<String> handleGenderException(GenderException ex) {
+    @ExceptionHandler(value = GenderException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleGenderException(GenderException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "GENDER"));
     }
 
-    @ExceptionHandler(LocationException.class)
-    public ResponseEntity<String> handleLocationException(LocationException ex) {
+    @ExceptionHandler(value = LocationException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleLocationException(LocationException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "LOCATION"));
     }
 
-    @ExceptionHandler(PasswordException.class)
-    public ResponseEntity<String> handlePasswordException(PasswordException ex) {
+    @ExceptionHandler(value = PasswordException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handlePasswordException(PasswordException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "PASSWORD"));
     }
 
-    @ExceptionHandler(PrivilegeException.class)
-    public ResponseEntity<String> handlePrivilegeException(PrivilegeException ex) {
+    @ExceptionHandler(value = PrivilegeException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handlePrivilegeException(PrivilegeException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "PRIVILEGE"));
     }
 
-    @ExceptionHandler(RoleException.class)
-    public ResponseEntity<String> handleRoleException(RoleException ex) {
+    @ExceptionHandler(value = RoleException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleRoleException(RoleException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "ROLE"));
     }
-    @ExceptionHandler(TokenException.class)
-    public ResponseEntity<String> handleTokenException(TokenException ex) {
+    @ExceptionHandler(value = TokenException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleTokenException(TokenException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "TOKEN"));
     }
-    @ExceptionHandler(UsernameException.class)
-    public ResponseEntity<String> handleUsernameException(UsernameException ex) {
+    @ExceptionHandler(value = UsernameException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleUsernameException(UsernameException ex) {
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "USERNAME"));
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex){
+    @ExceptionHandler(value = BadCredentialsException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleBadCredentialsException(BadCredentialsException ex){
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "PASSWORD"));
     }
 
-    @ExceptionHandler(InternalException.class)
-    public ResponseEntity<String> handleInternalException(BadCredentialsException ex){
+    @ExceptionHandler(value = InternalException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleInternalException(BadCredentialsException ex){
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "INTERNAL_ERROR"));
     }
 
-    @ExceptionHandler(ServletException.class)
-    public ResponseEntity<String> handleServletException(ServletException ex){
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    @ExceptionHandler(value = ServletException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleServletException(ServletException ex){
+        return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "INTERNAL_ERROR"));
     }
 
-    @ExceptionHandler(SpecializationException.class)
-    public ResponseEntity<String> handleSpecializationException(SpecializationException ex){
+    @ExceptionHandler(value = SpecializationException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleSpecializationException(SpecializationException ex){
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "SPECIALIZATION"));
     }
 
-    @ExceptionHandler(AvailabilityException.class)
-    public ResponseEntity<String> handleAvailabilityException(AvailabilityException ex){
+    @ExceptionHandler(value = AvailabilityException.class, produces = "application/json")
+    public  ResponseEntity<Map<String, String>> handleAvailabilityException(AvailabilityException ex){
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "AVAILABILITY"));
     }
 
-    @ExceptionHandler(AppointmentException.class)
-    public ResponseEntity<String> handleAppointmentException(AppointmentException ex){
+    @ExceptionHandler(value = AppointmentException.class, produces = "application/json")
+    public ResponseEntity<Map<String, String>> handleAppointmentException(AppointmentException ex){
         return ResponseEntity.badRequest().body(messageToError(ex.getMessage(), "APPOINTMENT"));
     }
 }

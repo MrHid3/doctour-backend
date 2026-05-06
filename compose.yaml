@@ -1,9 +1,45 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: postgis/postgis:16-3.5-alpine
+    restart: unless-stopped
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_DB: ${DOC_DB_NAME}
+      POSTGRES_PASSWORD: ${DOC_DB_PASSWORD}
+      POSTGRES_USER: ${DOC_DB_USERNAME}
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+    networks:
+        - internal
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DOC_DB_USERNAME} -d ${DOC_DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DOC_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DOC_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DOC_DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: prod
+      DOC_JWT_SECRET: ${DOC_JWT_SECRET}
+      DOC_FRONTEND_URL: ${DOC_FRONTEND_URL}
+      DOC_EMAIL_HOST: ${DOC_EMAIL_HOST}
+      DOC_EMAIL_PORT: ${DOC_EMAIL_PORT}
+      DOC_EMAIL_USERNAME: ${DOC_EMAIL_USERNAME}
+      DOC_EMAIL_PASSWORD: ${DOC_EMAIL_PASSWORD}
     ports:
-      - '5432'
+        - "8080:8080"
+    networks:
+        - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+
+networks:
+  internal:
+    driver: bridge

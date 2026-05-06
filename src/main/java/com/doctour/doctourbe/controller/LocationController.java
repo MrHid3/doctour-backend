@@ -46,7 +46,7 @@ public class LocationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getLocation(@PathVariable Long id) {
-        return ResponseEntity.ok(toDTO(locationService.findById(id).orElseThrow(() -> new LocationException("NOT_FOUND"))));
+        return ResponseEntity.ok(getLocationAvailibilities(locationService.findById(id).orElseThrow(() -> new LocationException("NOT_FOUND"))));
     }
 
     @GetMapping("/at")
