@@ -1,0 +1,537 @@
+{
+  "info": {
+    "_postman_id": "4d602111-76ad-4bc9-88eb-0c228d51c023",
+    "name": "doctour",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "46309146"
+  },
+  "item": [
+    {
+      "name": "register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"bob@gmail.com\",\n    \"username\": \"Bob Smith\",\n    \"password\": \"120608Gk!\",\n    \"role\": \"ROLE_CUSTOMER\",\n    \"genderId\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "activate account",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"token\": \"b9050cd7-af98-438d-8359-257564181531\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/auth/activate",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "activate"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"alice@gmail.com\",\n    // \"email\": \"bob@gmail.com\",\n    \"password\": \"153753aB!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/auth/login",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ADD gender",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Male\",\n    \"shortname\": \"M\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/gender",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "gender"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ALL genders",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/gender",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "gender"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ALL doctors",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "8dfedd69-39e5-4746-90ca-8b75ac2bf82a",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{backend_url}}/api/doctor",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "doctor"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ADD location",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{csrf_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"5 Szpital Dziecięcy\",\n    \"description\": \"Jeden z top 3 szpitali w Krakowie\",\n    \"latitude\": \"50.064444\",\n    \"longitude\": \"19.945556\",\n    \"city\": \"Kraków\",\n    \"address\": \"ul. Jana Pawła II 12\",\n    \"postalCode\": \"30-838\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/location",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ALL locations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/location",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "location"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ADD availability",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{csrf_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"locationId\": 1,\n    \"start\": \"10:01\",\n    \"end\": \"12:00\",\n    \"dayOfWeek\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/availability",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "availability"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UPDATE availability",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{csrf_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"locationId\": 2,\n    \"start\": \"10:00\",\n    \"end\": \"18:00\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/availability/0c28356e-2b66-47e1-af5d-f780fd1e2411",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "availability",
+            "0c28356e-2b66-47e1-af5d-f780fd1e2411"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "availability",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{csrf_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{backend_url}}/api/availability/0c28356e-2b66-47e1-af5d-f780fd1e2411",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "availability",
+            "0c28356e-2b66-47e1-af5d-f780fd1e2411"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DOCTOR",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{csrf_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"locationId\": 1,\n    \"start\": \"09:00\",\n    \"end\": \"17:00\",\n    \"dayOfWeek\": 1\n}"
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/doctor/55eb420a-a37b-4c82-b393-92bd0398cc16",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "doctor",
+            "55eb420a-a37b-4c82-b393-92bd0398cc16"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ADD specialization",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Uchologia\",\n    \"description\": \"Nauka o uszach\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/specialization",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "specialization"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CLAIM specialization",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"specializationId\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/doctor/specialization",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "doctor",
+            "specialization"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UNCLAIM specialization",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"specializationId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/doctor/specialization/1",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "doctor",
+            "specialization",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "SET appointment",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"doctorUuid\": \"0863c377-17bc-4fe2-8a2d-29fc9c885440\",\n        \"locationId\": \"1\",\n        \"date\": \"2026-04-29\",\n        \"start\": \"21:32\",\n        \"end\": \"22:00\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{backend_url}}/api/appointment",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "appointment"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "MY appointments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/appointment",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "appointment"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "location at",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/location/at?radius=1100&longitude=19.945556&latitude=50.064444",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "location",
+            "at"
+          ],
+          "query": [
+            {
+              "key": "radius",
+              "value": "1100"
+            },
+            {
+              "key": "longitude",
+              "value": "19.945556"
+            },
+            {
+              "key": "latitude",
+              "value": "50.064444"
+            },
+            {
+              "key": "",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "backend_url",
+      "value": "http:localhost:8080"
+    },
+    {
+      "key": "csrf_token",
+      "value": "975dd06b-3e54-40bc-badf-8f9d0d6f75e0"
+    }
+  ]
+}
